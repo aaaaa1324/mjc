@@ -214,7 +214,7 @@ window.addEventListener("click", function (event) {
   }
 });
 
-// 로그인 버튼 클릭 시 간단한 검증
+// 로그인 버튼 클릭 시 확인 처리
 document.getElementById("loginForm").addEventListener("submit", function(e) {
   e.preventDefault();
   const username = document.getElementById("username").value;
@@ -226,4 +226,9 @@ document.getElementById("loginForm").addEventListener("submit", function(e) {
   } else {
     alert("아이디 또는 비밀번호가 틀렸습니다.");
   }
+});
+// 회원가입 버튼 클릭 시 동작 
+document.getElementById("signupBtn").addEventListener("click", function () {
+  alert("회원가입 페이지로 이동합니다!"); // 나중엔 실제 페이지로 연결 
+  // location.href = "/signup.html"; // 실제 회원가입 페이지로 이동할 때
 });
