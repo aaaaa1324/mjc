@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>명지전문대 - 오늘의 메뉴는</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <link rel="stylesheet" href="main.css"> <!-- CSS 연결 -->
+</head>
+<body>
+  <nav id="navmenu" class="navmenu">
+    <ul>
+      
+      <li><a href="board.html" class="active">게시판</a></li>
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+    </nav>
+
+  <button id="openLoginModal">로그인</button>
+
+  <!-- 로그인 모달 -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('loginModal')">&times;</span>
+      <h1 class="modal-title">오늘의 메뉴는</h1>
+      <h2>로그인</h2>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="아이디" required>
+        <input type="password" id="password" placeholder="비밀번호" required>
+        <button type="submit" class="login-button">로그인</button>
+        <button type="button" class="kakao-login">카카오톡으로 로그인</button>
+        <button type="button" class="email-login">이메일로 로그인</button>
+      </form>
+      <div class="signup-text">
+        아직 회원이 아니신가요? <button id="signupBtn">회원가입</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 회원가입 모달 -->
+  <div id="signupModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('signupModal')">&times;</span>
+      <h1 class="modal-title">회원가입</h1>
+      <form id="signupForm">
+        <input type="text" placeholder="이름" required>
+        <input type="email" placeholder="이메일" required>
+        <input type="password" placeholder="비밀번호" required>
+        <input type="password" placeholder="비밀번호 확인" required>
+        <button type="submit" class="signup-button">회원가입</button>
+      </form>
+      <div class="signup-text">
+        이미 계정이 있으신가요? <button id="backToLoginBtn">로그인</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginModal = document.getElementById("loginModal");
+    const signupModal = document.getElementById("signupModal");
+
+    document.getElementById("openLoginModal").addEventListener("click", () => {
+      loginModal.style.display = "flex";
+    });
+
+    document.getElementById("signupBtn").addEventListener("click", () => {
+      loginModal.style.display = "none";
+      signupModal.style.display = "flex";
+    });
+
+    document.getElementById("backToLoginBtn").addEventListener("click", () => {
+      signupModal.style.display = "none";
+      loginModal.style.display = "flex";
+    });
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = "none";
+    }
+
+    // 모달 밖 클릭 시 닫기
+    window.addEventListener("click", (event) => {
+      if (event.target === loginModal) loginModal.style.display = "none";
+      if (event.target === signupModal) signupModal.style.display = "none";
+    });
+  </script>
+</body>
+</html>

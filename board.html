@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>명지전문대 - 오늘의 메뉴는</title>
+  <style>
+    /* 전체 레이아웃 스타일 설정 */
+    .board-container {
+      display: flex;
+      min-height: calc(100vh - 90px);
+      margin-top: 90px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* 좌측 사이드바 스타일 */
+    .sidebar {
+      width: 220px;
+      background-color: #e7f0ff;
+      padding: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 12px 16px;
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar button:hover {
+      background-color: #004c99;
+    }
+
+    /* 게시판 본문 영역 스타일 */
+    .board-content {
+      flex-grow: 1;
+      padding: 40px;
+      background-color: #f9f9f9;
+    }
+
+    /* 게시판 내용 섹션 기본 숨김 처리 */
+    .board-section {
+      display: none;
+    }
+
+    /* 활성화된 게시판 섹션 */
+    .board-section.active {
+      display: block;
+    }
+
+    .board-section h2 {
+      font-size: 26px;
+      color: #333;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 10px;
+    }
+
+    /* 게시글 카드 스타일 */
+    .post {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      cursor: pointer;
+    }
+
+    .post:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0066cc;
+      margin-bottom: 10px;
+    }
+
+    .post-meta {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 15px;
+    }
+
+    .post-content {
+      font-size: 15px;
+      color: #555;
+    }
+
+    /* 댓글 스타일 */
+    .comment {
+      background-color: #f1f1f1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    /* 모달 공통 스타일 */
+    .modal {
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      width: 500px;
+      position: relative;
+    }
+
+    .modal-content .close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="board-container">
+    <!-- 사이드바 버튼들 -->
+    <nav class="sidebar">
+      <button onclick="showBoard('free')">📢 자유게시판</button>
+      <button onclick="showBoard('lunch')">🍱 점메추 게시판</button>
+      <button onclick="showBoard('restaurant')">🍜 나만 아는 맛집</button>
+      <button onclick="showBoard('pub')">🍶 나만 아는 술집</button>
+    </nav>
+
+    <div class="board-content">
+      <!-- 자유게시판 섹션 -->
+      <div id="free" class="board-section active">
+        <h2>자유게시판</h2>
+
+        <!-- 샘플 게시글 1 -->
+        <div class="post" onclick="openDetailModal('안녕하세요! 오늘 급식 맛있었어요 😋', 'MJ학생', '2025.04.14', '오늘 국밥이 정말 맛있었어요! 여러분도 드셨나요?', ['맛있었어요!', '저도 먹었어요!'], false)">
+          <div class="post-title">안녕하세요! 오늘 급식 맛있었어요 😋</div>
+          <div class="post-meta">작성자: MJ학생 | 2025.04.14</div>
+          <div class="post-content">오늘 국밥이 정말 맛있었어요! 여러분도 드셨나요?</div>
+        </div>
+
+        <!-- 샘플 게시글 2 -->
+        <div class="post" onclick="openDetailModal('시험기간입니다ㅠㅠ', '컴공과', '2025.04.13', '다들 공부 열심히 하세요.. 저는 벌써 체력이 방전...', ['화이팅!', '힘내세요!'], false)">
+          <div class="post-title">시험기간입니다ㅠㅠ</div>
+          <div class="post-meta">작성자: 컴공과 | 2025.04.13</div>
+          <div class="post-content">다들 공부 열심히 하세요.. 저는 벌써 체력이 방전...</div>
+        </div>
+
+        <!-- 글쓰기 버튼 -->
+        <div style="text-align: right; margin-bottom: 20px;">
+          <button onclick="openWriteModal()" style="background-color: #0066cc; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold;">
+            + 글쓰기
+          </button>
+        </div>
+      </div>
+
+      <!-- 글쓰기 모달 -->
+      <div id="writeModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close" onclick="closeWriteModal()">&times;</span>
+          <h2>글쓰기</h2>
+          <input type="text" id="newTitle" placeholder="제목" style="width: 100%; padding: 10px; margin-bottom: 10px;">
+          <textarea id="newContent" placeholder="내용을 입력하세요" style="width: 100%; height: 150px; padding: 10px;"></textarea>
+          <button onclick="submitPost()" style="margin-top: 10px; background-color: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 6px;">작성 완료</button>
+        </div>
+      </div>
+
+      <!-- 게시글 상세보기 모달 -->
+      <div id="detailModal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span class="close" onclick="closeDetailModal()">&times;</span>
+          <h2 id="detailTitle"></h2>
+          <div id="detailAuthor"></div>
+          <div id="detailDate"></div>
+          <p id="detailContent"></p>
+          <hr>
+          <h4>댓글</h4>
+          <div id="commentList"></div>
+          <input type="text" id="commentInput" placeholder="댓글을 입력하세요" style="width: 80%; padding: 6px;">
+          <button onclick="addComment()" style="padding: 6px 10px; background-color: #0066cc; color: white;">작성</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let userPosts = []; // 사용자가 작성한 게시글 저장용
+    let currentPostIndex = null; // 댓글 작성 시 해당 글 위치 기억
+
+    // 게시판 메뉴 클릭 시 해당 게시판 표시
+    function showBoard(boardId) {
+      document.querySelectorAll('.board-section').forEach(section => section.classList.remove('active'));
+      document.getElementById(boardId).classList.add('active');
+    }
+
+    // 글쓰기 모달 열기
+    function openWriteModal() {
+      document.getElementById('writeModal').style.display = 'flex';
+    }
+
+    // 글쓰기 모달 닫기
+    function closeWriteModal() {
+      document.getElementById('writeModal').style.display = 'none';
+    }
+
+    // 글쓰기 완료 후 게시판에 추가
+    function submitPost() {
+      const title = document.getElementById('newTitle').value.trim();
+      const content = document.getElementById('newContent').value.trim();
+
+      if (!title || !content) {
+        alert("제목과 내용을 입력해주세요!");
+        return;
+      }
+
+      // 날짜 생성
+      const today = new Date();
+      const dateStr = today.getFullYear() + "." + (today.getMonth() + 1).toString().padStart(2, '0') + "." + today.getDate().toString().padStart(2, '0');
+
+      // 게시글 데이터 구성
+      const postData = {
+        title: title,
+        author: "익명",
+        date: dateStr,
+        content: content,
+        comments: []
+      };
+
+      userPosts.push(postData); // 배열에 저장
+
+      // 게시판에 새 요소 추가
+      const postDiv = document.createElement("div");
+      postDiv.className = "post";
+      postDiv.innerHTML = `
+        <div class="post-title">${title}</div>
+        <div class="post-meta">작성자: 익명 | ${dateStr}</div>
+        <div class="post-content">${content}</div>
+      `;
+      postDiv.onclick = () => openDetailModal(title, "익명", dateStr, content, postData.comments, true);
+      document.getElementById("free").insertBefore(postDiv, document.getElementById("free").lastElementChild);
+
+      closeWriteModal();
+      document.getElementById('newTitle').value = "";
+      document.getElementById('newContent').value = "";
+    }
+
+    // 상세보기 모달 열기
+    function openDetailModal(title, author, date, content, comments, isUserPost) {
+      document.getElementById('detailTitle').innerText = title;
+      document.getElementById('detailAuthor').innerText = `작성자: ${author}`;
+      document.getElementById('detailDate').innerText = `작성일: ${date}`;
+      document.getElementById('detailContent').innerText = content;
+
+      // 댓글 목록 생성
+      const commentList = document.getElementById('commentList');
+      commentList.innerHTML = '';
+      comments.forEach(comment => {
+        const div = document.createElement('div');
+        div.className = 'comment';
+        div.innerText = comment;
+        commentList.appendChild(div);
+      });
+
+      // 현재 글 인덱스 저장 (댓글 기능 위해)
+      if (isUserPost) {
+        currentPostIndex = userPosts.findIndex(post => post.title === title && post.date === date);
+      } else {
+        currentPostIndex = null;
+      }
+
+      document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    // 상세보기 모달 닫기
+    function closeDetailModal() {
+      document.getElementById('detailModal').style.display = 'none';
+    }
+
+    // 댓글 추가 기능
+    function addComment() {
+      const input = document.getElementById('commentInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const commentList = document.getElementById('commentList');
+      const div = document.createElement('div');
+      div.className = 'comment';
+      div.innerText = text;
+      commentList.appendChild(div);
+
+      // 댓글을 해당 글에 저장
+      if (currentPostIndex !== null) {
+        userPosts[currentPostIndex].comments.push(text);
+      } else {
+        alert("이 게시글은 기본 글이라 댓글 저장은 안 돼요");
+      }
+
+      input.value = '';
+    }
+  </script>
+</body>
+
+</html>
